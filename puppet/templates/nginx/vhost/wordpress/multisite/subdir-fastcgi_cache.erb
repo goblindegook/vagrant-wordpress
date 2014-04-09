@@ -1,0 +1,120 @@
+#move next 3 lines to /etc/nginx/nginx.conf if you want to use fastcgi_cache across many sites 
+fastcgi_cache_path /var/run/nginx-cache levels=1:2 keys_zone=WORDPRESS:500m inactive=60m;
+fastcgi_cache_key "$scheme$request_method$host$request_uri";
+fastcgi_cache_use_stale error timeout invalid_header http_500;
+
+server {
+	<% if @vhost['domain_mapping'] %>
+	listen 80 default_server;
+	server_name_in_redirect off;
+	<% end %>
+	server_name <%= @name %> *.<%= @name %>;
+
+	access_log  <%= @vhost['access_log'] %>;
+	error_log   <%= @vhost['error_log'] %>;
+
+	root <%= @vhost['root'] %>;
+	index index.php;
+
+	#fastcgi_cache start
+	set $skip_cache 0;
+
+	# POST requests and urls with a query string should always go to PHP
+	if ($request_method = POST) {
+		set $skip_cache 1;
+	}   
+	if ($query_string != "") {
+		set $skip_cache 1;
+	}   
+
+	# Don't cache uris containing the following segments
+	if ($request_uri ~* "(/wp-admin/|/xmlrpc.php|/wp-(app|cron|login|register|mail).php|wp-.*.php|/feed/|index.php|wp-comments-popup.php|wp-links-opml.php|wp-locations.php|sitemap(_index)?.xml|[a-z0-9_-]+-sitemap([0-9]+)?.xml)") {
+		set $skip_cache 1;
+	}   
+
+	# Don't use the cache for logged in users or recent commenters
+	if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+		set $skip_cache 1;
+	}
+
+    # Don't cache WooCommerce pages
+    if ($request_uri ~* "/store.*|/cart.*|/my-account.*|/checkout.*|/addons.*") {
+        set $skip_cache 1;
+    }
+
+    if ( $arg_add-to-cart != "" ) { 
+        set $skip_cache 1;
+    }
+
+    # Completely disable cache if the shopping cart is not empty
+    # if ( $cookie_woocommerce_items_in_cart != "0" ) { 
+    #     set $skip_cache 1;
+    # }
+
+    if (!-e $request_filename) {
+            rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+            rewrite ^(/[^/]+)?(/wp-.*) $2 last;
+            rewrite ^/[^/]+(/.*.php)$ $1 last;
+    }
+
+	location ~ \.(vagrant|staging|production)$ {
+		deny all;
+		access_log off;
+		log_not_found off;
+	}
+
+	location / {
+		try_files $uri $uri/ /index.php?$args;
+	}    
+
+	location ~ \.php$ {
+
+        set $wc_session "";
+
+        if ($http_cookie ~* "wc_session_cookie_[^=]*=([^%]+)%7C") {
+            set $wc_session wc_session_cookie_$1;
+        }
+
+        if ($skip_cache = 0 ) {
+            more_clear_headers "Set-Cookie*";
+            set $wc_session "";
+        }
+
+        fastcgi_cache_key "$scheme$request_method$host$request_uri$wc_session";
+
+        try_files $uri /index.php =404;
+
+		try_files $uri /index.php; 
+		include fastcgi_params;
+		fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+        fastcgi_cache_bypass $skip_cache;
+            fastcgi_no_cache $skip_cache;
+
+        fastcgi_cache WORDPRESS;
+        fastcgi_cache_valid  60m;
+
+		fastcgi_pass <%= @vhost['fastcgi_pass'] %>;
+	}
+
+	location ~ /purge(/.*) {
+	    # fastcgi_cache_purge WORDPRESS "$scheme$request_method$host$1";
+	}
+
+    location ~ \.(css|htc|js|js2|js3|js4)$ {
+        expires 31536000s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=31536000, public";
+    }
+
+	location ~ \.(asf|asx|wax|wmv|wmx|avi|bmp|class|divx|doc|docx|eot|exe|gif|gz|gzip|ico|jpg|jpeg|jpe|json|mdb|mid|midi|mov|qt|mp3|m4a|mp4|m4v|mpeg|mpg|mpe|mpp|otf|odb|odc|odf|odg|odp|ods|odt|ogg|pdf|png|pot|pps|ppt|pptx|ra|ram|svg|svgz|swf|tar|tif|tiff|ttf|ttc|wav|wma|wri|xla|xls|xlsx|xlt|xlw|zip)$ {
+	    expires 31536000s;
+	    add_header Pragma "public";
+	    add_header Cache-Control "max-age=31536000, public";
+	    access_log off;
+	    log_not_found off;
+	}
+
+	location = /robots.txt { access_log off; log_not_found off; }
+	location ~ /\. { deny  all; access_log off; log_not_found off; }
+}

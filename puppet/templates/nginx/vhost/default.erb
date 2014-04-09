@@ -1,0 +1,48 @@
+server {
+  # listen 80 default_server;
+  # server_name_in_redirect off;
+  server_name <%= @name %> *.<%= @name %>;
+
+  access_log  <%= @vhost['access_log'] %>;
+  error_log   <%= @vhost['error_log'] %>;
+
+  root <%= @vhost['root'] %>;
+  if ($http_host != "<%= @name %>") {
+    rewrite ^ $scheme://<%= @name %>$request_uri permanent;
+  }
+  index index.php index.html;
+  location = /favicon.ico {
+    log_not_found off;
+    access_log off;
+  }
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+
+  # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .git, etc.
+
+  location ~ /\. {
+    deny all;
+    access_log off;
+    log_not_found off;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.php?$args;
+  }
+  
+  location ~* \.(jpg|jpeg|png|gif|css|js|ico)$ {
+    expires max;
+    log_not_found off;
+  }
+  
+  location ~ \.php$ {
+    try_files $uri =404;
+    include fastcgi_params;
+    fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass <%= @vhost['fastcgi_pass'] %>;
+  }
+
+}

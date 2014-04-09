@@ -1,0 +1,247 @@
+---
+vm:
+    box: centos-65-x64-virtualbox-puppet
+    box_url: http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box
+    hostname: wpdev
+    network:
+        private_network:
+            ip: 192.168.50.20
+    ioapic: 'on'
+    cpus: 2
+    memory: 2048
+    forwarded_ports:
+        - host: 10080
+          guest: 80
+    synced_folders:
+        - host: www/
+          guest: /var/www
+          type: nfs
+          mount_options:
+            - users
+            - noauto
+    ssh:
+        forward_agent: true
+        forward_x11: false
+        keep_alive: true
+        shell: 'bash -l'
+hosts:
+    - wordpress.local
+    - www.wordpress.local
+    - test.wordpress.local
+    - trunk.wordpress.local
+    - www.trunk.wordpress.local
+packages:
+    rpm:
+        couchbase-server: 'http://packages.couchbase.com/releases/2.2.0/couchbase-server-community_2.2.0_x86_64.rpm'
+    yum:
+        - gettext
+        - ack
+        - bzip2
+        - colordiff
+        - ctags
+        - doxygen
+        - gcc
+        - git
+        - git-svn
+        - graphviz
+        - gzip
+        - htop
+        - libyaml
+        - ngrep
+        - phpMemcachedAdmin
+        - phpMyAdmin
+        - php-pecl-apcu
+        - php-pecl-couchbase
+        - php-pecl-imagick
+        - php-pecl-memcache
+        - php-pecl-memcached-2.1.0
+        - php-pecl-mysqlnd-ms
+        - php-pecl-mysqlnd-qc
+        - php-pecl-pdflib
+        - php-pecl-xdebug
+        - php-pecl-xhprof
+        - php-php-gettext
+        - php-soap
+        # - php-suhosin
+        - postfix
+        - ruby-devel
+        - subversion
+        - unzip
+        - vim-common
+        - zip
+    php:
+        - gd
+        - imap
+        - mbstring
+        - mcrypt
+        - mysqlnd
+        - fpm
+        - xml
+    pecl:
+    npm:
+        - bower
+        - grunt-cli
+        - grunt-pot
+        - yo
+    gem:
+        - bundler
+        - ffi
+        - nokogiri
+        - typhoeus
+vcs:
+    clone:
+        - source: http://develop.svn.wordpress.org/tags/3.8.2/
+          path: /var/www/wordpress.local
+          provider: svn
+        - source: http://develop.svn.wordpress.org/trunk/
+          path: /var/www/trunk.wordpress.local
+          provider: svn
+php:
+    ini:
+        php_memory_limit:
+            entry: PHP/memory_limit
+            value: 128M
+        php_upload_max_filesize:
+            entry: PHP/upload_max_filesize
+            value: 6M
+        zlib_output_compression:
+            entry: PHP/zlib.output_compression
+            value: 'Off'
+        date_date_timezone:
+            entry: Date/date.timezone
+            value: Europe/Lisbon
+        session_session_save_handler:
+            entry: Session/session.save_handler
+            value: memcached                        # files
+        session_session_save_path:
+            entry: Session/session.save_path
+            value: localhost:11211                  # /var/lib/php/session
+    memcache:
+        memcache_allow_failover:
+            entry: .anon/memcache.allow_failover
+            value: 1
+        memcache_max_failover_attempts:
+            entry: .anon/memcache.max_failover_attempts
+            value: 20
+        memcache_chunk_size:
+            entry: .anon/memcache.chunk_size
+            value: 32768
+        memcache_default_port:
+            entry: .anon/memcache.default_port
+            value: 11212
+        memcache_hash_strategy:
+            entry: .anon/memcache.hash_strategy
+            value: standard
+        memcache_hash_function:
+            entry: .anon/memcache.hash_function
+            value: crc32
+        memcache_session_save_handler:
+            entry: .anon/session.save_handler
+            value: memcached                        # files
+        memcache_session_save_path:
+            entry: .anon/session.save_path
+            value: localhost:11211                  # /var/lib/php/session
+    memcached-2.1.0:
+        memcached_session_save_handler:
+            entry: .anon/session.save_handler
+            value: memcached                        # files
+        memcached_session_save_path:
+            entry: .anon/session.save_path
+            value: localhost:11211                  # /var/lib/php/session
+    xdebug:
+        xdebug_profiler_enable:
+            entry: .anon/xdebug.profiler_enable
+            value: 0
+        xdebug_profiler_enable_trigger:
+            entry: .anon/xdebug.profiler_enable_trigger         # XDEBUG_PROFILE
+            value: 1
+        xdebug_profiler_output_dir:
+            entry: .anon/xdebug.profiler_output_dir
+            value: /var/www/xdebug
+php-fpm:
+    php_fpm_sock: /var/run/php5-fpm.sock
+    fastcgi_pass: unix:/var/run/php5-fpm.sock
+    fastcgi_param_parts:
+        - 'PATH_INFO $fastcgi_path_info'
+        - 'PATH_TRANSLATED $document_root$fastcgi_path_info'
+        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
+    user: nginx
+    group: nginx
+nginx:
+    worker_processes: 2
+    worker_connections: 1024
+    events_use: epoll
+    multi_accept: 'on'
+    nginx_error_log: /var/log/nginx/error.log
+    http_access_log: 'off'
+    keepalive_timeout: 3
+    keepalive_requests: 100
+    server_tokens: 'on'
+    gzip: 'on'
+    http_cfg_append:
+        fastcgi_buffers: 16 32k
+        fastcgi_buffer_size: 32k
+        keepalive_requests: 100
+        reset_timedout_connection: 'on'
+        client_body_timeout: 60
+        send_timeout: 2
+        tcp_nopush: 'on'
+        gzip_static: 'on'
+        gzip_vary: 'on'
+        gzip_proxied: any
+        gzip_types: text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript
+    vhosts:
+        devlog:
+            template: /vagrant/puppet/templates/nginx/vhost/default.erb
+            alias: ''
+            root: /usr/share/nginx/html
+            access_log: 'off'
+            error_log: 'off'
+            fastcgi_pass: unix:/var/run/php5-fpm.sock
+        wordpress.local:
+            template: /vagrant/puppet/templates/nginx/vhost/wordpress/multisite/subdir-w3tc.erb
+            alias: ''
+            root: /var/www/wordpress.local/src
+            access_log: 'off'
+            error_log: /var/www/wordpress.local/logs/error.log
+            fastcgi_pass: unix:/var/run/php5-fpm.sock
+            domain_mapping: false
+            vcsrepo: /var/www/wordpress.local
+        trunk.wordpress.local:
+            template: /vagrant/puppet/templates/nginx/vhost/sugar/default.erb
+            alias: ''
+            root: /var/www/trunk.wordpress.local/src
+            access_log: 'off'
+            error_log: /var/www/trunk.wordpress.local/logs/error.log
+            fastcgi_pass: unix:/var/run/php5-fpm.sock
+            vcsrepo: /var/www/trunk.wordpress.local
+mariadb:
+    root_password: vagrant
+    databases:
+        wordpress:
+            host: localhost
+            user: wordpress
+            password: vagrant
+            grant:
+                - ALL
+            sql: false
+            vcsrepo: /var/www/wordpress.local
+        wordpress_trunk:
+            host: localhost
+            user: wordpress
+            password: vagrant
+            grant:
+                - ALL
+            sql: false
+            vcsrepo: /var/www/trunk.wordpress.local
+        wordpress_test:
+            host: localhost
+            user: wordpress_test
+            password: vagrant
+            grant:
+                - ALL
+            sql: false
+couchbase:
+    username: Administrator
+    password: password
+timezone: Europe/Lisbon

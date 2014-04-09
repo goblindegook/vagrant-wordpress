@@ -1,0 +1,88 @@
+server {
+    <% if @vhost['domain_mapping'] %>
+    listen 80 default_server;
+    server_name_in_redirect off;
+    <% end %>
+    server_name <%= @name %> *.<%= @name %>;
+
+    access_log  <%= @vhost['access_log'] %>;
+    error_log   <%= @vhost['error_log'] %>;
+
+    root <%= @vhost['root'] %>;
+    index index.html index.php;
+
+    if (!-e $request_filename) {
+        rewrite /wp-admin$ $scheme://$host$uri/ permanent;     
+        rewrite ^(/[^/]+)?(/wp-.*) $2 last;                    
+        rewrite ^(/[^/]+)?(/.*\.php) $2 last;
+    }
+
+    set $cache_uri $request_uri;
+
+    # POST requests and urls with a query string should always go to PHP
+    if ($request_method = POST) {
+        set $cache_uri 'NULL';
+    }
+    if ($query_string != "") {
+        set $cache_uri 'NULL';
+    }
+
+    # Don't cache uris containing the following segments
+    if ($request_uri ~* "(/wp-admin/|/xmlrpc.php|/wp-(app|cron|login|register|mail).php|wp-.*.php|/feed/|index.php|wp-comments-popup.php|wp-links-opml.php|wp-locations.php|sitemap(_index)?.xml|[a-z0-9_-]+-sitemap([0-9]+)?.xml)") {
+        set $cache_uri 'NULL';
+    }
+
+    # Don't use the cache for logged in users or recent commenters
+    if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_logged_in") {
+        set $cache_uri 'NULL';
+    }
+
+    # Don't cache WooCommerce pages
+    if ($request_uri ~* "/store.*|/cart.*|/my-account.*|/checkout.*|/addons.*") {
+        set $cache_uri 'NULL';
+    }
+
+    if ( $arg_add-to-cart != "" ) { 
+        set $cache_uri 'NULL';
+    }
+
+    # Completely disable cache if the shopping cart is not empty
+    # if ( $cookie_woocommerce_items_in_cart != "0" ) { 
+    #     set $cache_uri 'NULL';
+    # }
+
+    location ~ \.(vagrant|staging|production)$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    # Use cached or actual file if they exists, otherwise pass request to WordPress
+    location / {
+         try_files /wp-content/cache/page_enhanced/${host}${cache_uri}_index.html $uri $uri/ /index.php?$args ;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php;
+        include fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass <%= @vhost['fastcgi_pass'] %>;
+    }
+
+    location ~ \.(css|htc|js|js2|js3|js4)$ {
+        expires 31536000s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=31536000, public";
+    }
+
+    location ~ \.(asf|asx|wax|wmv|wmx|avi|bmp|class|divx|doc|docx|eot|exe|gif|gz|gzip|ico|jpg|jpeg|jpe|json|mdb|mid|midi|mov|qt|mp3|m4a|mp4|m4v|mpeg|mpg|mpe|mpp|otf|odb|odc|odf|odg|odp|ods|odt|ogg|pdf|png|pot|pps|ppt|pptx|ra|ram|svg|svgz|swf|tar|tif|tiff|ttf|ttc|wav|wma|wri|xla|xls|xlsx|xlt|xlw|zip)$ {
+        expires 31536000s;
+        add_header Pragma "public";
+        add_header Cache-Control "max-age=31536000, public";
+        access_log off;
+        log_not_found off;
+    }
+
+    location = /robots.txt { access_log off; log_not_found off; }
+    location ~ /\. { deny  all; access_log off; log_not_found off; }
+}

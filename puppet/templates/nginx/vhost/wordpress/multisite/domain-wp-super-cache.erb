@@ -1,0 +1,55 @@
+server {
+	<% if @vhost['domain_mapping'] %>
+	listen 80 default_server;
+	server_name_in_redirect off;
+	<% end %>
+	server_name <%= @name %> *.<%= @name %>;
+
+	access_log  <%= @vhost['access_log'] %>;
+	error_log   <%= @vhost['error_log'] %>;
+
+	root <%= @vhost['root'] %>;
+	index index.php;
+
+	set $cache_uri $request_uri;
+
+	# POST requests and urls with a query string should always go to PHP
+	if ($request_method = POST) {
+		set $cache_uri 'NULL';
+	}   
+	if ($query_string != "") {
+		set $cache_uri 'NULL';
+	}   
+
+	# Don't cache uris containing the following segments
+	if ($request_uri ~* "(/wp-admin/|/xmlrpc.php|/wp-(app|cron|login|register|mail).php|wp-.*.php|/feed/|index.php|wp-comments-popup.php|wp-links-opml.php|wp-locations.php|sitemap(_index)?.xml|[a-z0-9_-]+-sitemap([0-9]+)?.xml)") {
+		set $cache_uri 'NULL';
+	}   
+
+	# Don't use the cache for logged in users or recent commenters
+	if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_logged_in") {
+		set $cache_uri 'NULL';
+	}
+
+	# Use cached or actual file if they exists, otherwise pass request to WordPress
+	location / {
+		try_files /wp-content/cache/supercache/$http_host/$cache_uri/index.html $uri $uri/ /index.php ;
+	}    
+
+	location ~ .php$ {
+		try_files $uri /index.php;
+		include fastcgi_params;
+		fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_pass <%= @vhost['fastcgi_pass'] %>;
+		#following line is needed by WP SUPER CACHE plugin
+ 		fastcgi_param SERVER_NAME $http_host;
+	}
+
+	location ~* ^.+.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+		access_log off;	log_not_found off; expires max;
+	}
+
+	location = /robots.txt { access_log off; log_not_found off; }
+	location ~ /\. { deny  all; access_log off; log_not_found off; }
+	location ^~ /wp-content/cache/ { deny  all; access_log off; log_not_found off; }	
+}
