@@ -475,32 +475,46 @@ $vcs['clone'].each |$repo| {
 # WordPress Config
 #
 
-$wp = hiera('wordpress')
+$wordpress = hiera('wordpress')
 
-$wp.each |$name, $wp| {
+$wordpress.each |$name, $wp| {
 
     $db = $mariadb['databases'][$wp['dbname']]
 
-    $extra_php = template('wordpress/wp-config.php')
+    $extra_php = template('/vagrant/puppet/templates/wordpress/wp-config.php.erb')
     
     Exec["wp core config ${name}"] -> Exec["wp core install ${name}"]
+
+    file { "${wp['vcsrepo']}/wp-tests-config.php":
+        ensure  => file,
+        content => template('/vagrant/puppet/templates/php-fpm/wp-tests-config.php.erb'),
+        notify  => [
+            Class['nginx::service'],
+            Service['php-fpm'],
+        ],
+        require     => [
+            Vcsrepo[$wp['vcsrepo']],
+        ],
+    }
 
     exec { "wp core config ${name}":
         command     => "wp core config --dbname=${wp['dbname']} --dbuser=${db['user']} --dbpass=${db['password']} --dbhost=${db['host']} --extra-php ${extra_php}",
         cwd         => "${wp['vcsrepo']}/src",
-        require     => {
+        require     => [
             File['/usr/bin/wp'],
             Vcsrepo[$wp['vcsrepo']],
-            Mysql::Db[$wp['db_name']],
-        },
+            Mysql::Db[$wp['dbname']],
+        ],
+        logoutput   => true,
     }
 
     exec { "wp core install ${name}":
-        command     => "wp core install --url=${wp['url']} --title="${wp['title']}" --admin_name="${wp['admin_name']}" --admin_email="${wp['admin_email']}" --admin_password="${wp['admin_password']}" --allow-root",
+        command     => "wp core install --url=${wp['url']} --title=\"${wp['title']}\" --admin_name=\"${wp['admin_name']}\" --admin_email=\"${wp['admin_email']}\" --admin_password=\"${wp['admin_password']}\" --allow-root",
         cwd         => "${wp['vcsrepo']}/src",
-        require     => {
+        require     => [
             File['/usr/bin/wp'],
-        }
+        ],
+        logoutput   => true,
     }
 
 }
