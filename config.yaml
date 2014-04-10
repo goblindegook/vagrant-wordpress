@@ -50,6 +50,8 @@ packages:
         - ngrep
         - phpMemcachedAdmin
         - phpMyAdmin
+        - php-pear-PhpDocumentor
+        - php-pear-PHP-CodeSniffer
         - php-pecl-apcu
         - php-pecl-couchbase
         - php-pecl-imagick
@@ -61,6 +63,12 @@ packages:
         - php-pecl-xdebug
         - php-pecl-xhprof
         - php-php-gettext
+        - php-phpmd-PHP-PMD
+        - php-phpunit-phpcov
+        - php-phpunit-phpcpd
+        - php-phpunit-phpdcd
+        - php-phpunit-phploc
+        - php-phpunit-PHPUnit
         - php-soap
         # - php-suhosin
         - postfix
@@ -77,7 +85,6 @@ packages:
         - mysqlnd
         - fpm
         - xml
-    pecl:
     npm:
         - bower
         - grunt-cli
@@ -254,6 +261,8 @@ wordpress:
         wp_debug: true
         wpcom_api_key: ''
         gf_license_key: ''
+        theme: ~
+        plugins: ~
     develop.wordpress.local:
         dbname: wordpress_dev
         vcsrepo: /var/www/develop.wordpress.local
@@ -266,6 +275,8 @@ wordpress:
         wp_debug: true
         wpcom_api_key: ''
         gf_license_key: ''
+        theme: ~
+        plugins: ~
 couchbase:
     username: Administrator
     password: password

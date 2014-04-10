@@ -198,9 +198,11 @@ define mariadb_db (
     if $name == '' or $password == '' {
         fail( 'Configuration error: user and password are required to create MariaDB databases.' )
     }
-
+    
+    $require = []
+    
     if $vcsrepo {
-        $require = Vcsrepo[$vcsrepo]
+        $require << Vcsrepo[$vcsrepo]
     }
 
     mysql::db { $name:
@@ -309,7 +311,7 @@ $nginx['vhosts'].each |$name, $vhost| {
 # PHP
 #
 
-Class['Php'] -> Class['Php::Devel'] -> Php::Module <| |> -> Php::Pear::Module <| |> -> Php::Pecl::Module <| |>
+Class['Php'] -> Class['Php::Devel'] -> Php::Module <| |>
 
 class {
     'php':
@@ -371,39 +373,6 @@ if is_array( $packages['php'] ) and count( $packages['php'] ) > 0 {
     php::module { $packages['php']:
     	service_autorestart => true,
     }
-}
-
-if is_array( $packages['pecl'] ) and count( $packages['pecl'] ) > 0 {
-    php::pecl::module { $packages['pecl']:
-        use_package         => false,
-        service_autorestart => true,
-    }
-}
-
-php::pear::module {
-    'PHP_CodeSniffer':
-	use_package         => false,
-	service_autorestart => true,
-	alldeps 			=> true,
-    ;
-    'phpDocumentor':
-    use_package         => false,
-    service_autorestart => true,
-    repository          => 'pear.phpdoc.org',
-    alldeps             => true,
-    ;
-    [ 'PHPUnit', 'phploc', 'phpcpd', 'phpcov' ]:
-	use_package         => false,
-	service_autorestart => true,
-	repository  		=> 'pear.phpunit.de',
-	alldeps 			=> true,
-    ;
-    'PHP_PMD':
-    use_package         => false,
-    service_autorestart => true,
-    repository          => 'pear.phpmd.org',
-    alldeps             => true,
-    ;
 }
 
 class { 'composer':
@@ -480,14 +449,10 @@ $wordpress = hiera('wordpress')
 $wordpress.each |$name, $wp| {
 
     $db = $mariadb['databases'][$wp['dbname']]
-
-    $extra_php = template('/vagrant/puppet/templates/wordpress/wp-config.php.erb')
     
-    Exec["wp core config ${name}"] -> Exec["wp core install ${name}"]
-
     file { "${wp['vcsrepo']}/wp-tests-config.php":
         ensure  => file,
-        content => template('/vagrant/puppet/templates/php-fpm/wp-tests-config.php.erb'),
+        content => template('/vagrant/puppet/templates/wordpress/wp-tests-config.php.erb'),
         notify  => [
             Class['nginx::service'],
             Service['php-fpm'],
@@ -497,22 +462,25 @@ $wordpress.each |$name, $wp| {
         ],
     }
 
-    exec { "wp core config ${name}":
-        command     => "wp core config --dbname=${wp['dbname']} --dbuser=${db['user']} --dbpass=${db['password']} --dbhost=${db['host']} --extra-php ${extra_php}",
-        cwd         => "${wp['vcsrepo']}/src",
+    file { "${wp['vcsrepo']}/wp-config.php":
+        ensure  => file,
+        content => template('/vagrant/puppet/templates/wordpress/wp-config.php.erb'),
+        notify  => [
+            Class['nginx::service'],
+            Service['php-fpm'],
+        ],
         require     => [
-            File['/usr/bin/wp'],
             Vcsrepo[$wp['vcsrepo']],
             Mysql::Db[$wp['dbname']],
         ],
-        logoutput   => true,
     }
 
     exec { "wp core install ${name}":
-        command     => "wp core install --url=${wp['url']} --title=\"${wp['title']}\" --admin_name=\"${wp['admin_name']}\" --admin_email=\"${wp['admin_email']}\" --admin_password=\"${wp['admin_password']}\" --allow-root",
+        command     => "wp core install --url=\"${wp['url']}\" --title=\"${wp['title']}\" --admin_name=\"${wp['admin_name']}\" --admin_email=\"${wp['admin_email']}\" --admin_password=\"${wp['admin_password']}\"",
         cwd         => "${wp['vcsrepo']}/src",
         require     => [
             File['/usr/bin/wp'],
+            File["${wp['vcsrepo']}/wp-config.php"],
         ],
         logoutput   => true,
     }
@@ -531,7 +499,7 @@ vcsrepo { '/usr/share/pear/PHP/CodeSniffer/Standards/WordPress':
     source      => 'git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git',
     ensure      => present,
     provider    => git,
-    require     => Php::Pear::Module['PHP_CodeSniffer'],
+    require     => Package['php-pear-PHP-CodeSniffer'],
 }
 
 # WP-CLI

@@ -1,3 +1,8 @@
+# OS X
+
+.DS_Store
+._*
+
 # Vagrant
 
 .vagrant/*
