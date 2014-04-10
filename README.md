@@ -62,9 +62,10 @@ The following applications and services are provided by the virtual machine.  UR
 | Application                  | Username       | Password |
 | ---------------------------- | -------------- | -------- |
 | [WordPress][]                | admin          | admin    |
+| [WordPress Development][]    | admin          | admin    |
 | MariaDB                      | root           | vagrant  |
 | ↳ `wordpress`                | wordpress      | vagrant  |
-| ↳ `wordpress_trunk`          | wordpress      | vagrant  |
+| ↳ `wordpress_dev`            | wordpress_dev  | vagrant  |
 | ↳ `wordpress_test`           | wordpress_test | vagrant  |
 | [phpMyAdmin][]               | root           | vagrant  |
 | [phpMemcachedAdmin][]        |                |          |
@@ -76,6 +77,7 @@ The following applications and services are provided by the virtual machine.  UR
 | [Webgrind][]                 |                |          |
 
 [WordPress]:                http://wordpress.local/wp-admin/
+[WordPress Development]:    http://develop.wordpress.local/wp-admin/
 [phpMyAdmin]:               http://wpdev/phpMyAdmin/
 [phpMemcachedAdmin]:        http://wpdev/phpMemcachedAdmin/
 [Couchbase]:                http://wpdev:8091/
