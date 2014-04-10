@@ -45,7 +45,7 @@ Advanced settings and workflows may require editing the Vagrant and Puppet files
 
 * _Vagrantfile_: Contains settings for Vagrant to download and set up the virtual machine.
 * _shell/provision.sh_: This shell script will be run whenever a virtual machine is provisioned, either on creation or by explicitly running `vagrant provision`.
-* _puppet/manifests/init.pp_: Main Puppet configuration manifest.
+* _puppet/manifests/default.pp_: Main Puppet configuration manifest.
 * _puppet/templates/*_: Contains templates for several configurations files used by the virtual machine.
 * _puppet/hiera.yaml_: Sets options for Puppet's hierarchical datastore used to maintain a catalogue of installed and configured componentes.
 

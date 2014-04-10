@@ -495,9 +495,12 @@ $wp.each |$name, $wp| {
         },
     }
 
-    exec { "wp core config ${name}":
+    exec { "wp core install ${name}":
         command     => "wp core install --url=${wp['url']} --title="${wp['title']}" --admin_name="${wp['admin_name']}" --admin_email="${wp['admin_email']}" --admin_password="${wp['admin_password']}" --allow-root",
         cwd         => "${wp['vcsrepo']}/src",
+        require     => {
+            File['/usr/bin/wp'],
+        }
     }
 
 }
