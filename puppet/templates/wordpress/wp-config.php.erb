@@ -1,0 +1,27 @@
+<<PHP
+/** Enable Cache */
+define( 'WP_CACHE', <%= @wp['wp_cache'] %> );
+
+/** Debug **/
+define( 'WP_DEBUG', <%= @wp['wp_debug'] %> );
+
+if (WP_DEBUG) {
+    define( 'WP_DEBUG_LOG', true );
+    define( 'WP_DEBUG_DISPLAY', false );
+    @ini_set( 'display_errors', 0 );
+    define( 'SAVEQUERIES', true );
+}
+
+/** Akismet API key **/
+define('WPCOM_API_KEY', '<%= @wp['wpcom_api_key'] %>');
+
+/** Gravity Forms License Key */
+define( 'GF_LICENSE_KEY', '<%= @wp['gf_license_key'] %>' );
+
+/** Disallow file editing **/
+define( 'DISALLOW_FILE_EDIT', true );
+define( 'DISALLOW_FILE_MODS', false );
+
+/** Disallow auto-updates **/
+define( 'WP_AUTO_UPDATE_CORE', false );
+PHP

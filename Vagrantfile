@@ -99,7 +99,6 @@ Vagrant.configure("2") do |config|
         puppet.manifests_path       = 'puppet/manifests'
         puppet.manifest_file        = 'default.pp'
         puppet.module_path          = 'puppet/modules'
-        puppet.synced_folder_type   = 'nfs'
         puppet.options = [
             '--verbose',
             '--hiera_config /vagrant/puppet/hiera.yaml',

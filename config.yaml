@@ -27,9 +27,9 @@ vm:
 hosts:
     - wordpress.local
     - www.wordpress.local
+    - develop.wordpress.local
+    - www.develop.wordpress.local
     - test.wordpress.local
-    - trunk.wordpress.local
-    - www.trunk.wordpress.local
 packages:
     rpm:
         couchbase-server: 'http://packages.couchbase.com/releases/2.2.0/couchbase-server-community_2.2.0_x86_64.rpm'
@@ -94,7 +94,7 @@ vcs:
           path: /var/www/wordpress.local
           provider: svn
         - source: http://develop.svn.wordpress.org/trunk/
-          path: /var/www/trunk.wordpress.local
+          path: /var/www/develop.wordpress.local
           provider: svn
 php:
     ini:
@@ -207,14 +207,14 @@ nginx:
             fastcgi_pass: unix:/var/run/php5-fpm.sock
             domain_mapping: false
             vcsrepo: /var/www/wordpress.local
-        trunk.wordpress.local:
-            template: /vagrant/puppet/templates/nginx/vhost/sugar/default.erb
+        develop.wordpress.local:
+            template: /vagrant/puppet/templates/nginx/vhost/wordpress/multisite/subdir-w3tc.erb
             alias: ''
-            root: /var/www/trunk.wordpress.local/src
+            root: /var/www/develop.wordpress.local/src
             access_log: 'off'
-            error_log: /var/www/trunk.wordpress.local/logs/error.log
+            error_log: /var/www/develop.wordpress.local/logs/error.log
             fastcgi_pass: unix:/var/run/php5-fpm.sock
-            vcsrepo: /var/www/trunk.wordpress.local
+            vcsrepo: /var/www/develop.wordpress.local
 mariadb:
     root_password: vagrant
     databases:
@@ -226,14 +226,14 @@ mariadb:
                 - ALL
             sql: false
             vcsrepo: /var/www/wordpress.local
-        wordpress_trunk:
+        wordpress_dev:
             host: localhost
-            user: wordpress
+            user: wordpress_dev
             password: vagrant
             grant:
                 - ALL
             sql: false
-            vcsrepo: /var/www/trunk.wordpress.local
+            vcsrepo: /var/www/develop.wordpress.local
         wordpress_test:
             host: localhost
             user: wordpress_test
@@ -241,6 +241,31 @@ mariadb:
             grant:
                 - ALL
             sql: false
+wordpress:
+    wordpress.local:
+        dbname: wordpress
+        vcsrepo: /var/www/wordpress.local
+        url: http://wordpress.local/
+        title: WordPress
+        admin_name: admin
+        admin_email: admin@wordpress.local
+        admin_password: admin
+        wp_cache: true
+        wp_debug: true
+        wpcom_api_key: ''
+        gf_license_key: ''
+    develop.wordpress.local:
+        dbname: wordpress_dev
+        vcsrepo: /var/www/develop.wordpress.local
+        url: http://develop.wordpress.local/
+        title: WordPress Development
+        admin_name: admin
+        admin_email: admin@develop.wordpress.local
+        admin_password: admin
+        wp_cache: false
+        wp_debug: true
+        wpcom_api_key: ''
+        gf_license_key: ''
 couchbase:
     username: Administrator
     password: password

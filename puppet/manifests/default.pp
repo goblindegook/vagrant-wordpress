@@ -282,6 +282,19 @@ $nginx['vhosts'].each |$name, $vhost| {
         ]
     }
 
+    if ($vhost['error_log'] != 'off' or $vhost['access_log'] != 'off') {
+        file { "${vhost['root']}/../logs":
+            ensure  => directory,
+            require => [
+                File["/etc/nginx/sites-enabled/${name}"],
+            ],
+            notify  => [
+                Service['nginx'],
+                Service['php-fpm'],
+            ],
+        }
+    }
+
     file { "/etc/nginx/sites-enabled/${name}":
         ensure  => link,
         path    => "/etc/nginx/sites-enabled/${name}",
@@ -452,21 +465,45 @@ file { '/home/vagrant/.ssh/known_hosts':
 }
 
 $vcs['clone'].each |$repo| {
-
     vcsrepo { $repo['path']:
         source      => $repo['source'],
         ensure      => latest,
         provider    => $repo['provider'],
         require     => File['/root/.ssh/known_hosts'],
     }
-
-    # TODO: Configure new WordPress instance
-
-    # exec { "...":
-    #     command     => '',
-    #     require     => Vcsrepo[$repo['path']],
-    # }
 }
+
+#
+# WordPress Config
+#
+
+$wp = hiera('wordpress')
+
+$wp.each |$name, $wp| {
+
+    $db = $mariadb['databases'][$wp['dbname']]
+
+    $extra_php = template('wordpress/wp-config.php')
+    
+    Exec["wp core config ${name}"] -> Exec["wp core install ${name}"]
+
+    exec { "wp core config ${name}":
+        command     => "wp core config --dbname=${wp['dbname']} --dbuser=${db['user']} --dbpass=${db['password']} --dbhost=${db['host']} --extra-php ${extra_php}",
+        cwd         => "${wp['vcsrepo']}/src",
+        require     => {
+            File['/usr/bin/wp'],
+            Vcsrepo[$wp['vcsrepo']],
+            Mysql::Db[$wp['db_name']],
+        },
+    }
+
+    exec { "wp core config ${name}":
+        command     => "wp core install --url=${wp['url']} --title="${wp['title']}" --admin_name="${wp['admin_name']}" --admin_email="${wp['admin_email']}" --admin_password="${wp['admin_password']}" --allow-root",
+        cwd         => "${wp['vcsrepo']}/src",
+    }
+
+}
+
 
 #
 # WordPress tools and additions
