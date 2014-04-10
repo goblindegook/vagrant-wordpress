@@ -269,4 +269,14 @@ wordpress:
 couchbase:
     username: Administrator
     password: password
+    ramsize: 256
+    buckets:
+        default:
+            type: couchbase
+            ramsize: 128
+            port: 11211
+        memcached:
+            type: memcached
+            ramsize: 128
+            port: 11212
 timezone: Europe/Lisbon

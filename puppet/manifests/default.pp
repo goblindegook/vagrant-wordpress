@@ -282,24 +282,22 @@ $nginx['vhosts'].each |$name, $vhost| {
         ]
     }
 
-    if ($vhost['error_log'] != 'off' or $vhost['access_log'] != 'off') {
-        file { "${vhost['root']}/../logs":
-            ensure  => directory,
-            require => [
-                File["/etc/nginx/sites-enabled/${name}"],
-            ],
-            notify  => [
-                Service['nginx'],
-                Service['php-fpm'],
-            ],
-        }
-    }
-
     file { "/etc/nginx/sites-enabled/${name}":
         ensure  => link,
         path    => "/etc/nginx/sites-enabled/${name}",
         target  => "/etc/nginx/sites-available/${name}",
         require => $require,
+        notify  => [
+            Service['nginx'],
+            Service['php-fpm'],
+        ],
+    }
+
+    file { "${vhost['root']}/../logs":
+        ensure  => directory,
+        require => [
+            File["/etc/nginx/sites-enabled/${name}"],
+        ],
         notify  => [
             Service['nginx'],
             Service['php-fpm'],
@@ -595,7 +593,7 @@ file_line { 'include ~/.bash_git':
 # Couchbase
 #
 
-$couchbase = hiera( 'couchbase' )
+$couchbase = hiera('couchbase')
 
 exec { "couchbase-node-init":
     path        => ['/opt/couchbase/bin', '/usr/bin', '/bin', '/sbin', '/usr/sbin' ],
