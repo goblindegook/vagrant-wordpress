@@ -254,29 +254,29 @@ wordpress:
     wordpress.local:
         dbname: wordpress_core
         vcsrepo: /var/www/wordpress.local
+        wp_cache: true
+        wp_debug: true
+        wpcom_api_key: ''
+        gf_license_key: ''
         url: http://wordpress.local/
         title: WordPress
         admin_name: admin
         admin_email: admin@wordpress.local
         admin_password: admin
-        wp_cache: true
-        wp_debug: true
-        wpcom_api_key: ''
-        gf_license_key: ''
         theme: ~
         plugins: ~
     develop.wordpress.local:
         dbname: wordpress_dev
         vcsrepo: /var/www/develop.wordpress.local
-        url: http://develop.wordpress.local/
-        title: WordPress Development
-        admin_name: admin
-        admin_email: admin@develop.wordpress.local
         admin_password: admin
         wp_cache: false
         wp_debug: true
         wpcom_api_key: ''
         gf_license_key: ''
+        url: http://develop.wordpress.local/
+        title: WordPress Development
+        admin_name: admin
+        admin_email: admin@develop.wordpress.local
         theme: ~
         plugins: ~
 couchbase:

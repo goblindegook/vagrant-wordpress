@@ -35,14 +35,14 @@ define('DB_COLLATE', '');
  * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
  * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
  */
-define('AUTH_KEY',         't|yWWJ|sUFk=cs+{h#---`=$:HHRM[<x!EA{A|]Z|U8V5/Wl5(~H4myQ|j=%2R9v');
-define('SECURE_AUTH_KEY',  '^)-[SaApazHOLsI9s5>Yy x2&LXtE2+Gr&A2kXQ}).uQ#}p|t .v-x+d{Nw7u$LE');
-define('LOGGED_IN_KEY',    'G:h}X$ytD<|=mZuu#./q,#d|?]ux45}w,0c<)pb@|( h,G]f0*5v(**8-Oirwnr+');
-define('NONCE_KEY',        '$Z(]YX-mm*EIi&X@ vR&_boV4`/N_dI-(o|zbX]X-HfL<Y#l+P8,?uN`d9B&8cPL');
-define('AUTH_SALT',        '5/r|7Z!D1Q}91AaX y@R-?*VA)g8.-s?nP@]w/k4AOx#}Gx-AF.!?Ppn<ATp}w&5');
-define('SECURE_AUTH_SALT', 'A&J{;LXpWc*@{v[Kf.En,65t--x>^1~-gM*!8fohG(,4Z+Xb<,0}}&~z}]5PL8xX');
-define('LOGGED_IN_SALT',   'R|ig;^qaB|+-OSNwo!}i5xBXM[L53P>TyB`|U@8ef[1.Yp[CJ^{v*nSZr.IkY&O}');
-define('NONCE_SALT',       '9=r3VS/lO+O.@Yu$wb;?G&5f!@Mz!n )x,H!:Gw.Z(IZ92*|jD9Kf~l7)w}wS+bO');
+define('AUTH_KEY',         'x~Cj+W6ipNT_n-lK|grQXXBps_+O24Q|Gv9x@{dbKQXUJ`TuuL%2H>l$/_UR+<iL');
+define('SECURE_AUTH_KEY',  'Jh<Ax{y6emQS@eU}G-@N;LiK|j-X`^U&C49@8f`=+X6(/QEYHkd!*F,<CFG6lOYs');
+define('LOGGED_IN_KEY',    '<2>(P3HQ2zF/!wV-W<wS?xO`=E0-xpxVNC-_QL;gGyIO$rQPJ<gtpx5b-HZN`pg ');
+define('NONCE_KEY',        '+0,e5Pzh-<0 vi#R7MDu4(kg-;I[i`g*tx[a_;3l7=c`;T~o[rP!z(s&-3vXzi=@');
+define('AUTH_SALT',        'E:+C?!!$T*inZ<LW9kk855O| (J)/SpM|3U-0GY,Ji6Q+$c=JA-!oF]y,cvSYas^');
+define('SECURE_AUTH_SALT', '8D Jp5x2Zl4nUMt!2;|iQqb[@ZI9jS|)+W_mK|Pit-oV|h@=FB,>i[K;/-M}--[=');
+define('LOGGED_IN_SALT',   's+D%g/wQ|=rw[:lPCVwBeNdo7?+W{&$`0GE@Z+|_H ~A3We<*`_QcJ5s4Cf5[/I>');
+define('NONCE_SALT',       'JkCC~c|/zG_V/M<r0vIW(h!gz-mLVA4gPR{ Xz9]o/R{#+0-`s5QS_($=iL?aMRa');
 
 /**#@-*/
 
@@ -63,8 +63,6 @@ $table_prefix = 'wp_';
  * language support.
  */
 define( 'WPLANG', '' );
-
-${wp['dbname']} --dbuser=${db['user']} --dbpass=${db['password']} --dbhost=${db['host']}
 
 /** Enable Cache */
 define( 'WP_CACHE', <%= @wp['wp_cache'] %> );
