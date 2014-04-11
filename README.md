@@ -15,7 +15,7 @@ $ vagrant plugin install vagrant-hostsupdater
 $ vagrant plugin install vagrant-puppet-librarian
 ```
 
-**NB:** If you obtained these Vagrant files from a Git repository, you'll have to delete or rename the (hidden) _.git_ directory at the root, otherwise your development environment will be unable to check out the projects you'll be working on.
+**NB:** If you obtained these Vagrant files from a Git repository, you'll have to rename the (hidden) _.git_ directory at the root, otherwise your development environment will be unable to check out the projects you'll be working on.
 
 ## Running the development environment
 
@@ -25,7 +25,7 @@ You are now ready to launch the virtual machine by typing:
 $ vagrant up
 ```
 
-`vagrant up` will download and setup all your development environment when you run it for the first time.  This can be a lengthy process, around 30-60 minutes, so find something else to do while you wait.
+`vagrant up` will download and setup your development environment from scratch when you run it for the first time.  This can be a lengthy process, around 30-60 minutes, so find something else to do while you wait.
 
 Whenever you want to stop working, you may shut down the development environment using:
 
@@ -46,10 +46,10 @@ Advanced settings and workflows may require editing the Vagrant and Puppet files
 * _Vagrantfile_: Contains settings for Vagrant to download and set up the virtual machine.
 * _shell/provision.sh_: This shell script will be run whenever a virtual machine is provisioned, either on creation or by explicitly running `vagrant provision`.
 * _puppet/manifests/default.pp_: Main Puppet configuration manifest.
-* _puppet/templates/*_: Contains templates for several configurations files used by the virtual machine.
+* _puppet/templates/*_: Contains templates for several configuration files used by the virtual machine.
 * _puppet/hiera.yaml_: Sets options for Puppet's hierarchical datastore used to maintain a catalogue of installed and configured componentes.
 
-If you alter any of these files, you will need to reprovision the development environment so your changes are applied. You don't need to recreate the virtual machine from scratch, simply run the following command:
+If you alter any of these files, you will have to reprovision the development environment so your changes are applied. You don't need to recreate the virtual machine from zero, simply run the following command:
 
 ```
 $ vagrant provision

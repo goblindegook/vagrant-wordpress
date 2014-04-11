@@ -11,7 +11,6 @@
 
 puppet/.librarian/*
 puppet/.tmp/*
-puppet/modules/*
 puppet/Puppetfile.lock
 
 # Sublime Text
