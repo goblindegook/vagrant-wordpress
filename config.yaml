@@ -200,7 +200,7 @@ nginx:
         gzip_proxied: any
         gzip_types: text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript
     vhosts:
-        devlog:
+        wpdev:
             template: /vagrant/puppet/templates/nginx/vhost/default.erb
             alias: ''
             root: /usr/share/nginx/html
@@ -227,9 +227,9 @@ nginx:
 mariadb:
     root_password: vagrant
     databases:
-        wordpress:
+        wordpress_core:
             host: localhost
-            user: wordpress
+            user: wordpress_core
             password: vagrant
             grant:
                 - ALL
@@ -252,7 +252,7 @@ mariadb:
             sql: false
 wordpress:
     wordpress.local:
-        dbname: wordpress
+        dbname: wordpress_core
         vcsrepo: /var/www/wordpress.local
         url: http://wordpress.local/
         title: WordPress
