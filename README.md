@@ -87,6 +87,55 @@ The following applications and services are provided by the virtual machine.  UR
 [ElasticSearch HQ]:         http://wordpress.local:9200/_plugin/HQ/
 [Webgrind]:                 http://wordpress.local/webgrind/
 
+## Command line tools
+
+You will also find a few helpful CLI tools inside your development environment (access with `vagrant ssh`):
+
+[Ack](http://beyondgrep.com/)
+: A fast tool for grepping code.
+
+[Bower](http://bower.io/)
+: A package manager for the web.
+
+[Composer](https://getcomposer.org/)
+: A dependency manager for PHP.
+
+[Grunt](http://gruntjs.com/)
+: JavaScript-based task automation.
+
+[makepot](https://codex.wordpress.org/I18n_for_WordPress_Developers)
+: POT file generator for WordPress internationalization.
+
+[PHPCS](http://pear.php.net/package/PHP_CodeSniffer/)
+: Detects coding standard violations in PHP, JavaScript and CSS files. Includes a set of [WordPress coding standards](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards).
+
+[PHPCOV](https://github.com/sebastianbergmann/phpcov)
+: A PHP code coverage report generator.
+
+[PHPCPD](https://github.com/sebastianbergmann/phpcpd)
+: A PHP copy-paste detector.
+
+[PHPDCD](https://github.com/sebastianbergmann/phpdcd)
+: A PHP dead code detector.
+
+[phpDocumentor](http://www.phpdoc.org/)
+: Documentation generator for PHP.
+
+[PHPLOC](https://github.com/sebastianbergmann/phploc)
+: Measures the size of a PHP project.
+
+[PHPMD](http://phpmd.org/)
+: A PHP Mess Detector.
+
+[PHPUnit](http://phpunit.de/)
+: PHP unit testing framework.
+
+[WP-CLI](http://wp-cli.org/)
+: Manage WordPress from the command line.
+
+[Yeoman](http://yeoman.io/)
+: Scaffolding tool for web projects.
+
 ## Port reference
 
 The following ports are exposed by the development virtual machine.

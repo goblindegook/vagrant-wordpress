@@ -93,7 +93,9 @@ packages:
     gem:
         - bundler
         - ffi
+        - less
         - nokogiri
+        - sass
         - typhoeus
 vcs:
     clone:
