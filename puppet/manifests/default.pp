@@ -95,6 +95,19 @@ if is_hash( $packages['rpm'] ) and count( $packages['rpm'] ) > 0 {
 }
 
 #
+# Install Ruby Gems
+#
+
+if is_array( $packages['gem'] ) and count( $packages['gem'] ) > 0 {
+    $packages['gem'].each |$name| {
+        package { $name:
+            provider    => 'gem',
+            ensure      => installed,
+        }
+    }
+}
+
+#
 # Setup hosts
 #
 
@@ -482,7 +495,30 @@ $wordpress.each |$name, $wp| {
             File['/usr/bin/wp'],
             File["${wp['vcsrepo']}/wp-config.php"],
         ],
-        logoutput   => true,
+    }
+
+    if is_array( $wp['plugins'] ) and count( $wp['plugins'] ) > 0 {
+        $wp['plugins'].each |$plugin| {
+            exec { "${name}: wp plugin install ${plugin}":
+                command     => "wp plugin install ${plugin} --allow-root",
+                cwd         => "${wp['vcsrepo']}/src",
+                require     => [
+                    File['/usr/bin/wp'],
+                    Exec["wp core install ${name}"],
+                ],
+            }
+        }
+    }
+
+    if is_string( $wp['theme'] ) and !empty( $wp['theme'] ) {
+        exec { "${name}: wp theme install ${wp['theme']}":
+            command     => "wp theme install ${wp['theme']} --activate --allow-root",
+            cwd         => "${wp['vcsrepo']}/src",
+            require     => [
+                File['/usr/bin/wp'],
+                Exec["wp core install ${name}"],
+            ],
+        }
     }
 
 }

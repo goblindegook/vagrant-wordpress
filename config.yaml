@@ -73,6 +73,8 @@ packages:
         # - php-suhosin
         - postfix
         - ruby-devel
+        - ruby
+        - rubygems
         - subversion
         - unzip
         - vim-common
@@ -92,11 +94,9 @@ packages:
         - yo
     gem:
         - bundler
-        - ffi
         - less
-        - nokogiri
         - sass
-        - typhoeus
+        - therubyracer
 vcs:
     clone:
         - source: http://develop.svn.wordpress.org/tags/3.8.2/
@@ -263,8 +263,29 @@ wordpress:
         admin_name: admin
         admin_email: admin@wordpress.local
         admin_password: admin
-        theme: ~
-        plugins: ~
+        theme: twentyfourteen‎
+        plugins:
+            - better-wp-security
+            - breadcrumb-trail
+            - groups
+            - jetpack
+            - pods
+            - polylang
+            - regenerate-thumbnails
+            - w3-total-cache
+            - wordpress-seo
+            - wp-performance-pack
+            - debug-bar
+            - debug-bar-actions-and-filters-addon
+            - debug-bar-console
+            - debug-bar-cron
+            - debug-bar-extender
+            - debug-bar-shortcodes
+            - debug-bar-transients
+            - developer
+            - p3-profiler
+            - rewrite-rules-inspector
+            - user-switching
     develop.wordpress.local:
         dbname: wordpress_dev
         vcsrepo: /var/www/develop.wordpress.local
