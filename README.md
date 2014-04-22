@@ -25,7 +25,9 @@ You are now ready to launch the virtual machine by typing:
 $ vagrant up
 ```
 
-`vagrant up` will download and setup your development environment from scratch when you run it for the first time.  This can be a lengthy process, around 30-60 minutes, so find something else to do while you wait.
+`vagrant up` will download and setup your development environment from scratch when you run it for the first time.
+
+On first run, Vagrant will pull a CentOS 6.5 box and install critical services required by WordPress, including Nginx (a high-performance web server), PHP-FPM (a FastCGI process manager for the PHP language) and MariaDB (a drop-in replacement for the MySQL relational database management system).  This can be a lengthy process, around 30-60 minutes, so find something else to do while you wait.
 
 Whenever you want to stop working, you may shut down the development environment using:
 
@@ -96,12 +98,12 @@ You will also find a few helpful CLI tools inside your development environment (
 * [Composer](https://getcomposer.org/): A dependency manager for PHP.
 * [Grunt](http://gruntjs.com/): JavaScript-based task automation.
 * [makepot](https://codex.wordpress.org/I18n_for_WordPress_Developers): POT file generator for WordPress internationalization.
-* [PHPCS](http://pear.php.net/package/PHP_CodeSniffer/): Detects coding standard violations in PHP, JavaScript and CSS files. Includes a set of [WordPress coding standards](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards).
-* [PHPCOV](https://github.com/sebastianbergmann/phpcov): A PHP code coverage report generator.
-* [PHPCPD](https://github.com/sebastianbergmann/phpcpd): A PHP copy-paste detector.
-* [PHPDCD](https://github.com/sebastianbergmann/phpdcd): A PHP dead code detector.
+* [PHP CodeSniffer](http://pear.php.net/package/PHP_CodeSniffer/): Detects coding standard violations in PHP, JavaScript and CSS files. Includes a set of [WordPress coding standards](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards).
+* [phpcov](https://github.com/sebastianbergmann/phpcov): A PHP code coverage report generator.
+* [phpcpd](https://github.com/sebastianbergmann/phpcpd): A PHP copy-paste detector.
+* [phpdcd](https://github.com/sebastianbergmann/phpdcd): A PHP dead code detector.
 * [phpDocumentor](http://www.phpdoc.org/): Documentation generator for PHP.
-* [PHPLOC](https://github.com/sebastianbergmann/phploc): Measures the size of a PHP project.
+* [phploc](https://github.com/sebastianbergmann/phploc): Measures the size of a PHP project.
 * [PHPMD](http://phpmd.org/): A PHP Mess Detector.
 * [PHPUnit](http://phpunit.de/): PHP unit testing framework.
 * [WP-CLI](http://wp-cli.org/): Manage WordPress from the command line.

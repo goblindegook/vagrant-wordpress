@@ -9,6 +9,8 @@
 
 # Puppet
 
+puppet/modules/*
+!puppet/modules/.gitignore
 puppet/.librarian/*
 puppet/.tmp/*
 puppet/Puppetfile.lock
