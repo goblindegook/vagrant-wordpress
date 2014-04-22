@@ -158,6 +158,12 @@ php:
             entry: .anon/session.save_path
             value: localhost:11211                  # /var/lib/php/session
     xdebug:
+        xdebug_remote_enable:
+            entry: .anon/xdebug.remote_enable
+            value: 1
+        xdebug_remote_host:
+            entry: .anon/xdebug.remote_host
+            value: 192.168.50.1
         xdebug_profiler_enable:
             entry: .anon/xdebug.profiler_enable
             value: 0
