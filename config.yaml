@@ -99,7 +99,7 @@ packages:
         - therubyracer
 vcs:
     clone:
-        - source: http://develop.svn.wordpress.org/tags/3.8.2/
+        - source: http://develop.svn.wordpress.org/tags/3.9/
           path: /var/www/wordpress.local
           provider: svn
         - source: http://develop.svn.wordpress.org/trunk/

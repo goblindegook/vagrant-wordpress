@@ -1,5 +1,9 @@
 # WordPress Development Environment
 
+This is a Vagrantized development environment for WordPress.
+
+It was created for personal and professional use, and the choice of stack is very much influenced by my tastes and requirements, but I decided to share it in case it's of any use to the WordPress developer community.  Feel free to fork it and please send back any pull requests.
+
 ## Before you begin
 
 First of all, make sure the following components are installed:
@@ -124,3 +128,32 @@ The following ports are exposed by the development virtual machine.
 | 9200  | ElasticSearch API                          |
 | 11211 | Couchbase Memcached API (Couchbase bucket) |
 | 11212 | Couchbase Memcached API (Memcached bucket) |
+
+## Acknowledgements
+
+This Vagrant setup wouldn't have been possible without the examples set forth by the following projects:
+
+* [PuPHPet](https://puphpet.com/)
+* [VagrantPress](https://github.com/chad-thompson/vagrantpress)
+* [Varying Vagrant Vagrants](https://github.com/Varying-Vagrant-Vagrants/VVV)
+
+### Puppet Modules
+
+The following Puppet modules are used to provision VM services:
+
+* [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
+* [puppetlabs/concat](https://forge.puppetlabs.com/puppetlabs/concat)
+* [puppetlabs/firewall](https://forge.puppetlabs.com/puppetlabs/firewall)
+* [puppetlabs/git](https://forge.puppetlabs.com/puppetlabs/git)
+* [puppetlabs/mysql](https://forge.puppetlabs.com/puppetlabs/mysql)
+* [puppetlabs/ntp](https://forge.puppetlabs.com/puppetlabs/ntp)
+* [puppetlabs/vcsrepo](https://forge.puppetlabs.com/puppetlabs/vcsrepo)
+* [elasticsearch/elasticsearch](https://forge.puppetlabs.com/elasticsearch/elasticsearch)
+* [example42/yum](https://forge.puppetlabs.com/example42/yum)
+* [example42/iptables](https://forge.puppetlabs.com/example42/iptables)
+* [example42/php](https://forge.puppetlabs.com/example42/php)
+* [example42/puppi](https://forge.puppetlabs.com/example42/puppi)
+* [jfryman/nginx](https://forge.puppetlabs.com/jfryman/nginx)
+* [maestrodev/wget](https://forge.puppetlabs.com/maestrodev/wget)
+* [tPl0ch/composer](https://forge.puppetlabs.com/tPl0ch/composer)
+* [willdurand/nodejs](https://forge.puppetlabs.com/willdurand/nodejs)
