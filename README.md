@@ -16,7 +16,7 @@ Then, open a terminal on the folder where _Vagrantfile_ resides, and install the
 
 ```
 $ vagrant plugin install vagrant-hostsupdater
-$ vagrant plugin install vagrant-puppet-librarian
+$ vagrant plugin install vagrant-librarian-puppet
 ```
 
 **NB:** If you obtained these Vagrant files from a Git repository, you'll have to rename the (hidden) _.git_ directory at the root, otherwise your development environment will be unable to check out the projects you'll be working on.
