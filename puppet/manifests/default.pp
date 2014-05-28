@@ -541,7 +541,7 @@ vcsrepo { '/usr/share/pear/PHP/CodeSniffer/Standards/WordPress':
 # WP-CLI
 
 exec{ 'wp-cli download':
-    command => "curl -o /usr/bin/wp -L https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
+    command => "curl -o /usr/bin/wp -kL https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar",
     require => Package[ 'curl' ],
     creates => "/usr/bin/wp"
 }
@@ -599,7 +599,7 @@ file_line { 'include ~/.bash_aliases':
 
 exec { 'bash_git':
     cwd     => "/home/vagrant",
-    command => "curl https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > /home/vagrant/.bash_git",
+    command => "curl -kL https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > /home/vagrant/.bash_git",
     creates => "/home/vagrant/.bash_git",
 }
 
