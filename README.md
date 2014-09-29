@@ -12,7 +12,7 @@ First of all, make sure the following components are installed:
 * [VirtualBox](https://www.virtualbox.org/)
 * VirtualBox Extension Pack
 
-Then, open a terminal on the folder where _Vagrantfile_ resides, and install the `hostsupdater` and `puppet-librarian` plugins by typing into the prompt:
+Then, open a terminal on the folder where _Vagrantfile_ resides, and install the `hostsupdater` and `librarian-puppet` plugins by typing into the prompt:
 
 ```
 $ vagrant plugin install vagrant-hostsupdater

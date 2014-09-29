@@ -7,7 +7,7 @@ vm:
         private_network:
             ip: 192.168.50.20
     ioapic: 'on'
-    cpus: 2
+    cpus: 1
     memory: 2048
     forwarded_ports:
         - host: 10080
@@ -52,7 +52,6 @@ packages:
         - phpMyAdmin
         - php-pear-PhpDocumentor
         - php-pear-PHP-CodeSniffer
-        - php-pecl-apcu
         - php-pecl-couchbase
         - php-pecl-imagick
         - php-pecl-memcache
@@ -91,6 +90,7 @@ packages:
         - bower
         - grunt-cli
         - grunt-pot
+        - gulp
         - yo
     gem:
         - bundler
@@ -99,7 +99,7 @@ packages:
         - therubyracer
 vcs:
     clone:
-        - source: http://develop.svn.wordpress.org/tags/3.9/
+        - source: http://develop.svn.wordpress.org/tags/4.0/
           path: /var/www/wordpress.local
           provider: svn
         - source: http://develop.svn.wordpress.org/trunk/
@@ -183,7 +183,7 @@ php-fpm:
     user: nginx
     group: nginx
 nginx:
-    worker_processes: 2
+    worker_processes: 1
     worker_connections: 1024
     events_use: epoll
     multi_accept: 'on'
@@ -275,6 +275,8 @@ wordpress:
             - breadcrumb-trail
             - groups
             - jetpack
+            - json-rest-api
+            - members
             - pods
             - polylang
             - regenerate-thumbnails
@@ -287,11 +289,15 @@ wordpress:
             - debug-bar-cron
             - debug-bar-extender
             - debug-bar-shortcodes
+            - debug-bar-slow-actions
             - debug-bar-transients
             - developer
             - p3-profiler
+            - post-meta-inspector
             - rewrite-rules-inspector
+            - uploads-by-proxy
             - user-switching
+            - wp-crontrol
     develop.wordpress.local:
         dbname: wordpress_dev
         vcsrepo: /var/www/develop.wordpress.local

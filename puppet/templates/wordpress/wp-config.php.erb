@@ -62,38 +62,41 @@ $table_prefix = 'wp_';
  * de_DE.mo to wp-content/languages and set WPLANG to 'de_DE' to enable German
  * language support.
  */
-define( 'WPLANG', '' );
+define('WPLANG', '');
 
 /** Enable Cache */
-define( 'WP_CACHE', <%= @wp['wp_cache'] %> );
+define('WP_CACHE', <%= @wp['wp_cache'] %>);
 
 /** Debug **/
-define( 'WP_DEBUG', <%= @wp['wp_debug'] %> );
+define('WP_DEBUG', <%= @wp['wp_debug'] %>);
 
-if (WP_DEBUG) {
-    define( 'WP_DEBUG_LOG', true );
-    define( 'WP_DEBUG_DISPLAY', false );
-    @ini_set( 'display_errors', 0 );
-    define( 'SAVEQUERIES', true );
+if ( WP_DEBUG ) {
+    define('WP_DEBUG_LOG', true);
+    define('WP_DEBUG_DISPLAY', false);
+    @ini_set('display_errors', 0);
+    define('SAVEQUERIES', true);
 }
+
+/** Jetpack Debug Mode **/
+define('JETPACK_DEV_DEBUG', WP_DEBUG);
 
 /** Akismet API key **/
 define('WPCOM_API_KEY', '<%= @wp['wpcom_api_key'] %>');
 
 /** Gravity Forms License Key */
-define( 'GF_LICENSE_KEY', '<%= @wp['gf_license_key'] %>' );
+define('GF_LICENSE_KEY', '<%= @wp['gf_license_key'] %>');
 
 /** Disallow file editing **/
-define( 'DISALLOW_FILE_EDIT', true );
-define( 'DISALLOW_FILE_MODS', false );
+define('DISALLOW_FILE_EDIT', true);
+define('DISALLOW_FILE_MODS', false);
 
 /** Disallow auto-updates **/
-define( 'WP_AUTO_UPDATE_CORE', false );
+define('WP_AUTO_UPDATE_CORE', false);
 
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */
-if ( !defined('ABSPATH') )
+if (! defined('ABSPATH'))
 	define('ABSPATH', dirname(__FILE__) . '/');
 
 /** Sets up WordPress vars and included files. */
